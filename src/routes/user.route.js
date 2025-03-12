@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const verifyJWT = require('../middlewares/authMiddleware'); // Ensure this is correctly pointing to your middleware
-const authController = require('../controllers/authController');
+const { register, login, refreshToken } = require('../controllers/authController');
+// const { verifyJWT, verifyAdmin } = require('../middlewares');
+// const { verifyJWT } = require('../middlewares/verifyJWT');
+const { verifyAdmin } = require('../middlewares/authMiddleware');
+
+
 
 // Registration route
-router.post('/register', authController.register); // Added registration route
+router.post('/register', register); // Added registration route
 
 // Login route
-router.post('/login', authController.login);
+router.post('/login', login);
 
 // Dashboard route (protected route)
-router.get('/dashboard', verifyJWT, (req, res) => {
-  res.json({ message: 'Welcome to the dashboard!', user: req.user });
+router.get('/dashboard', verifyAdmin, (req, res) => {
+  res.json({ message: 'Welcome to the admin dashboard!' });
 });
 
 // Refresh token route
-router.post('/refresh-token', authController.refreshToken);
+router.post('/refresh-token', refreshToken);
 
 module.exports = router;
