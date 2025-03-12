@@ -38,7 +38,7 @@ const refreshToken = (req, res) => {
 
 // Register function to create a new user
 const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   // Check if user already exists
   const userExists = await User.findOne({ username });
@@ -57,7 +57,8 @@ const register = async (req, res) => {
 
   // Create the new user
   const newUser = new User({
-    username,
+    firstName,
+    lastName,
     email,
     password: hashedPassword,
   });
@@ -72,9 +73,9 @@ const register = async (req, res) => {
 
 // Login function to authenticate and issue tokens
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(400).json({ message: 'Invalid credentials' });
   }
