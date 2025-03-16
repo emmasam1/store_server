@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
-const router = require("./routes/route")
+const router = require("./routes/route");
 const PORT = process.env.PORT || 3000;
 
 // Database connection
@@ -21,16 +21,14 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow both localhost:3000 and localhost:5174
       const allowedOrigins = ["https://store-server-6lv5.onrender.com", "http://localhost:5174"];
-      if (allowedOrigins.includes(origin) || !origin) {
-        // Allow requests with no origin (like mobile apps or Postman)
+      if (allowedOrigins.includes(origin) || origin === undefined || origin === null) {
         callback(null, true);
       } else {
         callback(new Error('CORS policy: Origin not allowed'), false);
       }
     },
-    credentials: true, // Enable cookies and credentials with CORS
+    credentials: true,
   })
 );
 
