@@ -80,7 +80,7 @@ const login = async (req, res) => {
     });
 
     // Send access token in response body
-    res.json({ accessToken });
+    res.json({ user, accessToken });
   } catch (err) {
     res.status(500).json({ message: 'Error while logging in', error: err.message });
   }

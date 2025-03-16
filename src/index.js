@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
-const router = require("./routes/user.route");
+const router = require("./routes/route")
 const PORT = process.env.PORT || 3000;
 
 // Database connection
