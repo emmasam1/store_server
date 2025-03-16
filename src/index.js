@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: function (origin, callback) {
-      const allowedOrigins = ["https://store-server-6lv5.onrender.com", "http://localhost:5174"];
+      const allowedOrigins = ["https://store-server-6lv5.onrender.com", "http://localhost:5174", "http://localhost:5173"];
       if (allowedOrigins.includes(origin) || origin === undefined || origin === null) {
         callback(null, true);
       } else {
