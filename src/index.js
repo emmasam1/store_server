@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       // Allow both localhost:3000 and localhost:5174
-      const allowedOrigins = ["http://localhost:3000", "http://localhost:5174"];
+      const allowedOrigins = ["https://store-server-6lv5.onrender.com", "http://localhost:5174"];
       if (allowedOrigins.includes(origin) || !origin) {
         // Allow requests with no origin (like mobile apps or Postman)
         callback(null, true);
