@@ -14,7 +14,6 @@ const addProduct = async (req, res) => {
 
   let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
 
-
   const validSizes = sizesArray.every((size) =>
     ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
   );
@@ -44,7 +43,7 @@ const addProduct = async (req, res) => {
       productName,
       description,
       price,
-      sizes: sizesArray, 
+      sizes: sizesArray,
       imageUrl: cloudinaryResult.secure_url,
     });
 
@@ -92,6 +91,79 @@ const getProductById = async (req, res) => {
   }
 };
 
+const updateProduct = async (req, res) => {
+  const { productName, description, price, sizes } = req.body;
+  const image = req.file;
+  const productId = req.params.id;
 
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-module.exports = { upload, addProduct, getAllProducts, getProductById };
+    let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
+
+    const validSizes = sizesArray.every((size) =>
+      ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
+    );
+
+    if (!validSizes) {
+      return res.status(400).json({
+        message: "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
+      });
+    }
+
+    let imageUrl = product.imageUrl;
+
+    if (image) {
+      const cloudinaryResult = await cloudinary.uploader.upload(
+        `data:${image.mimetype};base64,${image.buffer.toString("base64")}`,
+        {
+          folder: "products",
+          use_filename: true,
+          unique_filename: true,
+          resource_type: "image",
+        }
+      );
+      imageUrl = cloudinaryResult.secure_url;
+    }
+
+    product.productName = productName || product.productName;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.sizes = sizesArray || product.sizes;
+    product.imageUrl = imageUrl;
+
+    await product.save();
+
+    return res.status(200).json({
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error updating product",
+      error: err.message,
+    });
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    return res.status(200).json({ message: "Product deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error deleting product",
+      error: err.message,
+    });
+  }
+};
+
+module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct };

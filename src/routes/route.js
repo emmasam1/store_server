@@ -4,7 +4,7 @@ const { register, login, refreshToken } = require('../controllers/authController
 // const { verifyJWT, verifyAdmin } = require('../middlewares');
 // const { verifyJWT } = require('../middlewares/verifyJWT');
 const { verifyAdmin } = require('../middlewares/authMiddleware');
-const { upload, addProduct, getAllProducts, getProductById } = require("../controllers/productController");
+const { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct } = require("../controllers/productController");
 
 
 router.post('/register', register); 
@@ -14,6 +14,8 @@ router.post('/login', login);
 router.post("/product", upload, addProduct);
 router.get("/product", getAllProducts);
 router.get("/product/:id", getProductById);
+router.put("/product/:id", upload, updateProduct);
+router.delete("/product/:id", deleteProduct);
 
 // Dashboard route (protected route)
 router.get('/dashboard', verifyAdmin, (req, res) => {
