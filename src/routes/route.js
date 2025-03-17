@@ -7,14 +7,10 @@ const { verifyAdmin } = require('../middlewares/authMiddleware');
 const { upload, addProduct, getAllProducts, getProductById } = require("../controllers/productController");
 
 
+router.post('/register', register); 
 
-// Registration route
-router.post('/register', register); // Added registration route
-
-// Login route
 router.post('/login', login);
 
-// router.post("/add", upload.single('image'), addProduct);
 router.post("/product", upload, addProduct);
 router.get("/product", getAllProducts);
 router.get("/product/:id", getProductById);

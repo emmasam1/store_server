@@ -12,10 +12,9 @@ const addProduct = async (req, res) => {
   console.log("Request Body:", req.body);
   console.log("Uploaded Image:", image);
 
-  // Ensure that sizes is an array (if it is not already)
   let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
 
-  // Validate sizes - Ensure sizes are valid
+
   const validSizes = sizesArray.every((size) =>
     ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
   );
@@ -26,7 +25,6 @@ const addProduct = async (req, res) => {
     });
   }
 
-  // Ensure all required fields are provided
   if (!productName || !description || !price || !sizesArray || !image) {
     return res.status(400).json({ message: "All fields are required." });
   }
@@ -46,7 +44,7 @@ const addProduct = async (req, res) => {
       productName,
       description,
       price,
-      sizes: sizesArray, // Store the validated sizes array
+      sizes: sizesArray, 
       imageUrl: cloudinaryResult.secure_url,
     });
 
