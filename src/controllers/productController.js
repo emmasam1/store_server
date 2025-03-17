@@ -166,4 +166,23 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct };
+const viewProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    product.views += 1;
+    await product.save();
+    return res.status(200).json({ message: "Product view count incremented" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Error incrementing view count",
+      error: err.message,
+    });
+  }
+}
+
+
+module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, viewProduct };
