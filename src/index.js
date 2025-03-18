@@ -15,8 +15,7 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(
-  cors({
+/*{
     origin: function (origin, callback) {
       const allowedOrigins = [
         "https://store-server-6lv5.onrender.com",
@@ -35,11 +34,12 @@ app.use(
       }
     },
     credentials: true,
-  })
+  } */
+app.use(
+  cors("*")
 );
 
-// Handle preflight requests (OPTIONS)
-app.options("*", cors());
+// app.options("*", cors());
 
 app.use("/api", router);
 
