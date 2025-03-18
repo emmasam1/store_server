@@ -6,7 +6,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single('image');
 
 const addProduct = async (req, res) => {
-  const { productName, description, price, sizes } = req.body;
+  const { productName, description, price, sizes, oldPrice } = req.body;
   const image = req.file;
 
   console.log("Request Body:", req.body);
@@ -43,6 +43,7 @@ const addProduct = async (req, res) => {
       productName,
       description,
       price,
+      oldPrice,
       sizes: sizesArray,
       imageUrl: cloudinaryResult.secure_url,
     });
@@ -92,7 +93,7 @@ const getProductById = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const { productName, description, price, sizes } = req.body;
+  const { productName, description, price, sizes, oldPrice } = req.body;
   const image = req.file;
   const productId = req.params.id;
 
@@ -132,6 +133,7 @@ const updateProduct = async (req, res) => {
     product.productName = productName || product.productName;
     product.description = description || product.description;
     product.price = price || product.price;
+    product.oldPrice = oldPrice || product.oldPrice;
     product.sizes = sizesArray || product.sizes;
     product.imageUrl = imageUrl;
 
