@@ -18,11 +18,20 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: function (origin, callback) {
-      const allowedOrigins = ["https://store-server-6lv5.onrender.com", "http://localhost:5174", "http://localhost:5173"];
-      if (allowedOrigins.includes(origin) || origin === undefined || origin === null) {
+      const allowedOrigins = [
+        "https://store-server-6lv5.onrender.com",
+        "http://localhost:5174",
+        "http://localhost:5173",
+        "https://store-ruby-tau.vercel.app/",
+      ];
+      if (
+        allowedOrigins.includes(origin) ||
+        origin === undefined ||
+        origin === null
+      ) {
         callback(null, true);
       } else {
-        callback(new Error('CORS policy: Origin not allowed'), false);
+        callback(new Error("CORS policy: Origin not allowed"), false);
       }
     },
     credentials: true,
@@ -30,7 +39,7 @@ app.use(
 );
 
 // Handle preflight requests (OPTIONS)
-app.options('*', cors());
+app.options("*", cors());
 
 app.use("/api", router);
 
