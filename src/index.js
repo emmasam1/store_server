@@ -22,7 +22,7 @@ app.use(
         "https://store-server-6lv5.onrender.com",
         "http://localhost:5174",
         "http://localhost:5173",
-        "https://store-ruby-tau.vercel.app/",
+        "https://store-ruby-tau.vercel.app",
       ];
       if (
         allowedOrigins.includes(origin) ||
