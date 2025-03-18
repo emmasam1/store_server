@@ -16,11 +16,13 @@ const {
   updateProduct,
   deleteProduct,
   viewProduct,
+  logOut
 } = require("../controllers/productController");
 
 router.post("/register", register);
 
 router.post("/login", login);
+router.post("/logout", logOut);
 
 router.post("/product", upload, addProduct);
 router.get("/product", getAllProducts);

@@ -186,5 +186,20 @@ const viewProduct = async (req, res) => {
   }
 }
 
+const logOut = async (req, res) => {
+  try {
+    res.clearCookie("authToken");
 
-module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, viewProduct };
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error logging out",
+      error: error.message,
+    });
+  }
+};
+
+
+
+module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, viewProduct, logOut };
