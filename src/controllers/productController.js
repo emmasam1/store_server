@@ -174,8 +174,10 @@ const viewProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     product.views += 1;
     await product.save();
+
     return res.status(200).json({ message: "Product view count incremented" });
   } catch (err) {
     console.error(err);
@@ -184,7 +186,8 @@ const viewProduct = async (req, res) => {
       error: err.message,
     });
   }
-}
+};
+
 
 const logOut = async (req, res) => {
   try {
