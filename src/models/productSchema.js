@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema(
     sizes: {
       type: [String],
       required: true,
-      enum: ["XS", "S", "M", "L", "XL", "XXL"],
+      enum: ["S", "M", "L", "XL"],
     },
     imageUrl: {
       type: String,
@@ -34,6 +34,16 @@ const productSchema = new mongoose.Schema(
     views: {
       type: Number,
       default: 0,
+    },
+    category: {
+      type: [String],
+      required: true,
+      enum: [
+        "Male Adult",
+        "Male Children",
+        "Female Adult",
+        "Female Children",
+      ],
     },
   },
   { timestamps: true }

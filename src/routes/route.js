@@ -31,12 +31,11 @@ router.put("/product/:id", upload, updateProduct);
 router.delete("/product/:id", deleteProduct);
 router.get("/product/view/:id", viewProduct);
 
-// Dashboard route (protected route)
+
 router.get("/dashboard", verifyAdmin, (req, res) => {
   res.json({ message: "Welcome to the admin dashboard!" });
 });
 
-// Refresh token route
 router.post("/refresh-token", refreshToken);
 
 module.exports = router;

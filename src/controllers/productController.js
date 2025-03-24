@@ -1,18 +1,76 @@
-const multer = require('multer');
+const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const Product = require("../models/productSchema");
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).single('image');
+const upload = multer({ storage: storage }).single("image");
+
+// const addProduct = async (req, res) => {
+//   const { productName, description, price, sizes, oldPrice } = req.body;
+//   const image = req.file;
+
+//   console.log("Request Body:", req.body);
+//   console.log("Uploaded Image:", image);
+
+//   let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
+
+//   const validSizes = sizesArray.every((size) =>
+//     ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
+//   );
+
+//   if (!validSizes) {
+//     return res.status(400).json({
+//       message: "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
+//     });
+//   }
+
+//   if (!productName || !description || !price || !sizesArray || !image) {
+//     return res.status(400).json({ message: "All fields are required." });
+//   }
+
+//   try {
+//     const cloudinaryResult = await cloudinary.uploader.upload(
+//       `data:${image.mimetype};base64,${image.buffer.toString("base64")}`,
+//       {
+//         folder: "products",
+//         use_filename: true,
+//         unique_filename: true,
+//         resource_type: "image",
+//       }
+//     );
+
+//     const newProduct = new Product({
+//       productName,
+//       description,
+//       price,
+//       oldPrice: oldPrice ? oldPrice : undefined,
+//       sizes: sizesArray,
+//       imageUrl: cloudinaryResult.secure_url,
+//     });
+
+//     await newProduct.save();
+
+//     return res.status(201).json({
+//       message: "Product created successfully",
+//       product: newProduct,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({
+//       message: "Error creating product",
+//       error: err.message,
+//     });
+//   }
+// };
 
 const addProduct = async (req, res) => {
-  const { productName, description, price, sizes, oldPrice } = req.body;
+  const { productName, description, price, sizes, oldPrice, category } =
+    req.body;
   const image = req.file;
 
-  console.log("Request Body:", req.body);
-  console.log("Uploaded Image:", image);
-
-  let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
+  let sizesArray = Array.isArray(sizes)
+    ? sizes
+    : sizes.split(",").map((size) => size.trim());
 
   const validSizes = sizesArray.every((size) =>
     ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
@@ -20,11 +78,19 @@ const addProduct = async (req, res) => {
 
   if (!validSizes) {
     return res.status(400).json({
-      message: "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
+      message:
+        "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
     });
   }
 
-  if (!productName || !description || !price || !sizesArray || !image) {
+  if (
+    !productName ||
+    !description ||
+    !price ||
+    !sizesArray ||
+    !image ||
+    !category
+  ) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
@@ -43,12 +109,13 @@ const addProduct = async (req, res) => {
       productName,
       description,
       price,
-      oldPrice,
-      sizes: sizesArray,
+      oldPrice: oldPrice ? oldPrice : null, 
       imageUrl: cloudinaryResult.secure_url,
+      category,
     });
 
     await newProduct.save();
+    console.log(newProduct);
 
     return res.status(201).json({
       message: "Product created successfully",
@@ -65,7 +132,14 @@ const addProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const { category } = req.query;
+    const filter = category ? { category: category } : {};
+    const products = await Product.find(filter);
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
     return res.status(200).json(products);
   } catch (err) {
     console.error(err);
@@ -75,6 +149,7 @@ const getAllProducts = async (req, res) => {
     });
   }
 };
+
 
 const getProductById = async (req, res) => {
   try {
@@ -103,15 +178,18 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
+    let sizesArray = Array.isArray(sizes)
+      ? sizes
+      : sizes.split(",").map((size) => size.trim());
 
     const validSizes = sizesArray.every((size) =>
-      ["XS", "S", "M", "L", "XL", "XXL"].includes(size)
+      ["XS", "S", "M", "L", "XL"].includes(size)
     );
 
     if (!validSizes) {
       return res.status(400).json({
-        message: "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
+        message:
+          "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
       });
     }
 
@@ -133,7 +211,7 @@ const updateProduct = async (req, res) => {
     product.productName = productName || product.productName;
     product.description = description || product.description;
     product.price = price || product.price;
-    product.oldPrice = oldPrice || product.oldPrice;
+    product.oldPrice = oldPrice !== undefined ? oldPrice : product.oldPrice; // Update only if oldPrice is provided
     product.sizes = sizesArray || product.sizes;
     product.imageUrl = imageUrl;
 
@@ -151,6 +229,66 @@ const updateProduct = async (req, res) => {
     });
   }
 };
+
+// const updateProduct = async (req, res) => {
+//   const { productName, description, price, sizes, oldPrice } = req.body;
+//   const image = req.file;
+//   const productId = req.params.id;
+
+//   try {
+//     const product = await Product.findById(productId);
+//     if (!product) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+
+//     let sizesArray = Array.isArray(sizes) ? sizes : sizes.split(",").map((size) => size.trim());
+
+//     const validSizes = sizesArray.every((size) =>
+//       ["XS", "S", "M", "L", "XL"].includes(size)
+//     );
+
+//     if (!validSizes) {
+//       return res.status(400).json({
+//         message: "Invalid size(s) provided. Allowed sizes are XS, S, M, L, XL, XXL.",
+//       });
+//     }
+
+//     let imageUrl = product.imageUrl;
+
+//     if (image) {
+//       const cloudinaryResult = await cloudinary.uploader.upload(
+//         `data:${image.mimetype};base64,${image.buffer.toString("base64")}`,
+//         {
+//           folder: "products",
+//           use_filename: true,
+//           unique_filename: true,
+//           resource_type: "image",
+//         }
+//       );
+//       imageUrl = cloudinaryResult.secure_url;
+//     }
+
+//     product.productName = productName || product.productName;
+//     product.description = description || product.description;
+//     product.price = price || product.price;
+//     product.oldPrice = oldPrice !== undefined ? oldPrice : product.oldPrice;
+//     product.sizes = sizesArray || product.sizes;
+//     product.imageUrl = imageUrl;
+
+//     await product.save();
+
+//     return res.status(200).json({
+//       message: "Product updated successfully",
+//       product,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({
+//       message: "Error updating product",
+//       error: err.message,
+//     });
+//   }
+// };
 
 const deleteProduct = async (req, res) => {
   try {
@@ -188,7 +326,6 @@ const viewProduct = async (req, res) => {
   }
 };
 
-
 const logOut = async (req, res) => {
   try {
     res.clearCookie("authToken");
@@ -203,6 +340,13 @@ const logOut = async (req, res) => {
   }
 };
 
-
-
-module.exports = { upload, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, viewProduct, logOut };
+module.exports = {
+  upload,
+  addProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  viewProduct,
+  logOut,
+};
