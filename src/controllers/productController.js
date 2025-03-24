@@ -109,7 +109,7 @@ const addProduct = async (req, res) => {
       productName,
       description,
       price,
-      oldPrice: oldPrice ? oldPrice : null, 
+      oldPrice: oldPrice ? oldPrice : "", 
       imageUrl: cloudinaryResult.secure_url,
       category,
     });

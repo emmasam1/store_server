@@ -72,7 +72,7 @@ app.use(
       const allowedOrigins = [
         "https://store-server-6lv5.onrender.com",
         "http://localhost:5174",
-        "http://localhost:5173",
+        "http://localhost:5175",
         "https://store-ruby-tau.vercel.app",
       ];
       if (
